@@ -12,6 +12,4 @@ router.get('/', function(req, res, next) {
           //console.log("user"+JSON.stringify(users));
 });
 
-
-
 module.exports = router;
