@@ -1,0 +1,28 @@
+extends layout
+
+block content
+
+    table
+        thead
+            tr
+                th id
+                th Name
+                th Username
+                th Email
+                th City
+                th Zip Code
+                th Latitude
+                th Longtitude
+                th Website
+        tbody
+        each info in userlist
+            tr
+                    td #{info.id}
+                    td #{info.name}
+                    td #{info.username}
+                    td #{info.email}
+                    td #{info.address.city}
+                    td #{info.address.zipcode}
+                    td #{info.address.geo.lat}
+                    td #{info.address.geo.lng}
+                    td #{info.website}
