@@ -3,13 +3,19 @@ var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
+var session = require('express-session')
 var bodyParser = require('body-parser');
+var validator = require('express-validator');
+var csrf = require('csurf');
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 var usersob = require('./routes/usersob');
 var usersaa = require('./routes/usersaa');
 var error = require('./routes/error');
+var newsletter = require('./routes/newsletter');
+var thankyou = require('./routes/thankyou');
+
 
 var app = express();
 
@@ -22,15 +28,29 @@ app.disable('etag');
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
+app.use(validator());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(session( {secret: 'keyboard cat',
+                  resave: false,
+                  saveUninitialized: true,
+                  cookie: { secure: true }}));
+app.use(csrf({cookie: true}));
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', index);
 app.use('/users', users);
 app.use('/usersaa', usersaa);
 app.use('/usersob', usersob);
+app.use('/newsletter', newsletter);
+app.use('/thankyou', thankyou);
 
+
+app.use(function (req, res, next) {
+    //res.locals.csrfToken = req.csrfToken();
+    res.locals._csrf = req.csrfToken();
+    next();
+})
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -38,6 +58,7 @@ app.use(function(req, res, next) {
   err.status = 404;
   next(err);
 });
+
 
 // error handler
 app.use(function(err, req, res, next) {
@@ -49,5 +70,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;
