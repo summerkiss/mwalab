@@ -1,6 +1,13 @@
 extends layout
 
 block content
-  h1= message
-  h2= error.status
-  pre #{error.stack}
+  if (typeof(error) !== 'undefined')
+    h1= message
+    h2= error.status
+    pre #{error.stack}
+
+  if (typeof(results) !== 'undefined')
+    each re,i in results
+      //h1= i
+      h2= re.status
+      pre #{re.stack}

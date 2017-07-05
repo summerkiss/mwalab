@@ -9,7 +9,7 @@
         <form action="/newsletter/subscribe" method="post">
             <label>Email<input type="text" name="email"></label>
             <!--input type="hidden" name="_csrf" value="#{csrftoken}"-->
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>"/>
+            <!--nput type="hidden" name="_csrf" value="{%csrfToken%}"/-->
             <button type="submit">subscrib</button>
         </form>
     </div>
