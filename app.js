@@ -15,6 +15,7 @@ var usersaa = require('./routes/usersaa');
 var error = require('./routes/error');
 var newsletter = require('./routes/newsletter');
 var thankyou = require('./routes/thankyou');
+var secret = require('./routes/secret');
 
 
 var app = express();
@@ -22,10 +23,13 @@ var app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+//app.engine('html',newsletter.jade)
 app.disable('etag');
 
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(validator());
@@ -36,7 +40,14 @@ app.use(session( {secret: 'keyboard cat',
                   saveUninitialized: true,
                   cookie: { secure: true }}));
 app.use(csrf({cookie: true}));
-app.use(express.static(path.join(__dirname, 'public')));
+
+
+// middleware must be before the router
+app.use(function (req, res, next) {
+    //res.locals.csrfToken = req.csrfToken();
+    res.locals._csrf = req.csrfToken();
+    next();
+})
 
 app.use('/', index);
 app.use('/users', users);
@@ -44,13 +55,10 @@ app.use('/usersaa', usersaa);
 app.use('/usersob', usersob);
 app.use('/newsletter', newsletter);
 app.use('/thankyou', thankyou);
+app.use('/secret', secret);
 
 
-app.use(function (req, res, next) {
-    //res.locals.csrfToken = req.csrfToken();
-    res.locals._csrf = req.csrfToken();
-    next();
-})
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
